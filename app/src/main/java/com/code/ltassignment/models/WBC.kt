@@ -1,4 +1,4 @@
-package com.code.ltassignment.models.countries
+package com.code.ltassignment.models
 
 import com.code.ltassignment.models.Portfolios
 import com.google.gson.annotations.SerializedName

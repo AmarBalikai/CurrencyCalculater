@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Bangladesh (
 
-   @SerializedName("ProductId") var ProductId : String,
-   @SerializedName("Rates") var Rates : RatesBangladesh
+   @SerializedName("ProductId") var productId : String,
+   @SerializedName("Rates") var rates : RatesBangladesh
 
 )
