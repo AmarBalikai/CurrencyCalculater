@@ -2,6 +2,8 @@ package com.code.ltassignment.di
 
 import com.code.ltassignment.utils.Constants
 import com.code.ltassignment.network.CurrencyApi
+import com.code.ltassignment.repository.DefaultMainRepository
+import com.code.ltassignment.repository.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +23,9 @@ object AppModule {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(CurrencyApi::class.java)
+
+    @Singleton
+    @Provides
+    fun provideMainRepository(api: CurrencyApi): MainRepository = DefaultMainRepository(api)
+
 }

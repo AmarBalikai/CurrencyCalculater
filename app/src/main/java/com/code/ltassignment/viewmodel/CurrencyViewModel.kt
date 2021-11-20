@@ -21,22 +21,15 @@ class CurrencyViewModel @Inject  constructor(
     val conversion:StateFlow<CurrencyEvent> = _conversion
 
 
-    fun convert(amount:String,fromCurrency:String,toCurrency:String)
-    {
-        val fromAmount=amount.toFloatOrNull()
-        if(fromAmount==null)
-        {
-            _conversion.value=CurrencyEvent.Failure("Not a valid amount")
-            return
-        }
+    fun getCurrencyApi(){
         viewModelScope.launch( Dispatchers.IO){
             _conversion.value=CurrencyEvent.Loading
             when(val rateResponse=repository.getRates())
             {
                 is Resource.Error-> _conversion.value=CurrencyEvent.Failure(rateResponse.message!!)
                 is Resource.Success->{
-                    val rates=rateResponse.data?.brandData?.brands?.WBC?.portfolios?.foreignExchange?.products?.republicChina?.rates?.CNH?.buyTC
-                              rateResponse.data?.brandData?.brands?.WBC?.portfolios?.foreignExchange?.products?.argentina?.rates?.argentina?.buyTC
+                    //rateResponse.data?.brandData?.brands?.WBC?.portfolios?.foreignExchange?.products.
+                    /*val rates=rateResponse.data?.brandData?.brands?.WBC?.portfolios?.foreignExchange?.products?.republicChina?.rates?.currencyInfo?.buyT*/
                 }
             }
         }
