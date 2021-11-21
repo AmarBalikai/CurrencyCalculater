@@ -7,6 +7,7 @@ import com.code.ltassignment.models.CurrencyInfo
 import com.code.ltassignment.repository.MainRepository
 import com.code.ltassignment.utils.CurrencyEvent
 import com.code.ltassignment.utils.Resource
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,6 @@ class CurrencyViewModel @Inject constructor(
                 is Resource.Error -> _conversion.value =
                     CurrencyEvent.Failure(rateResponse.message!!)
                 is Resource.Success -> {
-//                   var jsonObject= rateResponse.data?.brandData?.brands?.WBC?.portfolios?.foreignExchange?.Products
                     var jsonObject = JSONObject(rateResponse.data?.string())
                         .getJSONObject("data")
                         .getJSONObject("Brands")
@@ -45,9 +45,6 @@ class CurrencyViewModel @Inject constructor(
                         val keys: Iterator<String> = it.keys()
                         while (keys.hasNext()) {
                             val key = keys.next()
-                            Log.v("**********", "**********")
-                            Log.v("category key", key)
-//                            currencyList.add(it.getJSONObject(key))
                             val ratesJObject: JSONObject = it.getJSONObject(key)
                             val ratesInnerKeys = ratesJObject.keys()
                             while (ratesInnerKeys.hasNext()) {
@@ -55,30 +52,11 @@ class CurrencyViewModel @Inject constructor(
                                 var innermostJObject = JSONObject()
                                 try {
                                     innermostJObject = ratesJObject.getJSONObject(innerKkey)
+                                    val mainObject =  innermostJObject.getJSONObject(key)
+                                    val currencyInfo= Gson().fromJson(mainObject.toString(),CurrencyInfo::class.java)
+                                    currencyList.add(currencyInfo)
                                 } catch (e: Exception) {
                                     // ignore for String type
-                                }
-
-                                val innerMostKeys = innermostJObject.keys()
-                                while (innerMostKeys.hasNext()) {
-                                    val innerMostKkey = innerMostKeys.next()
-                                    val mainObject = innermostJObject.getJSONObject(innerMostKkey)
-                                    var currencyInfo = CurrencyInfo(
-                                        currencyCode = mainObject.getString("currencyCode"),
-                                        currencyName = mainObject.getString("currencyName"),
-                                        country = mainObject.getString("country"),
-                                        buyTT = mainObject.getString("buyTT"),
-                                        sellTT = mainObject.getString("sellTT"),
-                                        buyTC = mainObject.getString("buyTC"),
-                                        buyNotes = mainObject.getString("buyNotes"),
-                                        sellNotes = mainObject.getString("sellNotes"),
-                                        SpotRate_Date_Fmt = mainObject.getString("SpotRate_Date_Fmt"),
-                                        effectiveDate_Fmt = mainObject.getString("effectiveDate_Fmt"),
-                                        updateDate_Fmt = mainObject.getString("updateDate_Fmt"),
-                                        LASTUPDATED = mainObject.getString("LASTUPDATED")
-                                    )
-                                    currencyList.add(currencyInfo)
-
                                 }
                             }
                         }
